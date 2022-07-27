@@ -1,20 +1,20 @@
-def AI():
-  #!/usr/bin/env python3 
-  from flask import Flask
 
-  app = Flask(__name__)
+#!/usr/bin/env python3 
+from flask import Flask
 
-  from textgenrnn import textgenrnn
+app = Flask(__name__)
 
-  @app.route("/AINoText")
-  def AINoText():
-    textgen = textgenrnn(weights_path='UnivaqBot_weights.hdf5',
-                          vocab_path='UnivaqBot_vocab.json',
-                          config_path='UnivaqBot_config.json')
+from textgenrnn import textgenrnn
+
+@app.route("/AINoText")      #localhost porta 5000
+def AINoText():
+  textgen = textgenrnn(weights_path='UnivaqBot_weights.hdf5',
+                        vocab_path='UnivaqBot_vocab.json',
+                        config_path='UnivaqBot_config.json')
 
 
-    message = textgen.generate(1, temperature=1.0,return_as_list=True)        #decide il bot
-    print(message)
-    
-    return (message[0])
+  message = textgen.generate(1, temperature=1.0,return_as_list=True)        #decide il bot
+  print(message)
+  
+  return (message[0])
 
