@@ -5,7 +5,8 @@
 import logging
 
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
-# from textgenrnn import textgenrnn 
+from textgenrnn import textgenrnn 
+import random
 
 # insert textgenrnn code into the directory
 
@@ -18,17 +19,53 @@ def error(update, context):
   """Log Errors caused by Updates."""
   logger.warning('Update "%s" caused error "%s"', update, context.error)
 
+def print_out(out,update,context):
+    print(out)
+    update.message.reply_text(out[0])
+
+
 def AINoText(update, context):
+
+  up = update 
+  cont = context
+
+  messaggio = update.message.text.lower()
+  rand = random.randint(0, 12)
+
+  print("________________")
+  print(messaggio)
+  print(rand)
+  print("________________")
+
+
   textgen = textgenrnn( weights_path='UnivaqBot_weights.hdf5',
                         vocab_path='UnivaqBot_vocab.json',
                         config_path='UnivaqBot_config.json')
 
 
-  message = textgen.generate(1, temperature=1.0,return_as_list=True)        #decide il bot
-  print(message)
 
 
-  update.message.reply_text(message[0])
+  if(messaggio.count("banal") > 0):
+    print("banale detected")
+    if(random.randint(0, 2)>=1):
+      out = textgen.generate(1, prefix=messaggio,temperature=0.1,return_as_list=True)
+      print_out(out,up,cont)
+  if(messaggio.count("trivial") > 0):
+    print("triviale detected")
+    if(random.randint(0, 2)>=1):
+      out = textgen.generate(1, prefix=messaggio,temperature=0.3,return_as_list=True)
+      print_out(out,up,cont)
+  if(messaggio.count("palese") > 0):
+    print("palese detected")
+    if(random.randint(0, 2)>=1):
+      out = textgen.generate(1, prefix=messaggio,temperature=0.3,return_as_list=True)
+      print(out,up,cont)
+  elif (rand > 9):
+    print("vado di numero random")
+    out = textgen.generate(1, temperature=1.0,return_as_list=True)        #decide il bot
+    print_out(out,up,cont)
+
+
 
 def start(update, context):
   update.message.reply_text("Ciao, esisto")
