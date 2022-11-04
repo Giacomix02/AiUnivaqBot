@@ -1,9 +1,11 @@
 #!/usr/bin/env python
 
+# venv\Scripts\activate to activate the virtual environment
+
 import logging
 
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
-from textgenrnn import textgenrnn 
+# from textgenrnn import textgenrnn 
 
 # insert textgenrnn code into the directory
 
