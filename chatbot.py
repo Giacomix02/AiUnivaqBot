@@ -46,24 +46,38 @@ def AINoText(update, context):
 
 
   if(messaggio.count("banal") > 0):
-    print("banale detected")
-    if(random.randint(0, 2)>=1):
+    print("****** banale detected ******")
+    if(random.randint(0, 1)==1):
       out = textgen.generate(1, prefix=messaggio,temperature=0.1,return_as_list=True)
-      print_out(out,up,cont)
-  if(messaggio.count("trivial") > 0):
-    print("triviale detected")
-    if(random.randint(0, 2)>=1):
-      out = textgen.generate(1, prefix=messaggio,temperature=0.3,return_as_list=True)
-      print_out(out,up,cont)
-  if(messaggio.count("palese") > 0):
-    print("palese detected")
-    if(random.randint(0, 2)>=1):
-      out = textgen.generate(1, prefix=messaggio,temperature=0.3,return_as_list=True)
-      print(out,up,cont)
+      if(out!=messaggio): print_out(out,up,cont)
+  elif(messaggio.count("trivial") > 0):
+    print("****** triviale detected ******")
+    if(random.randint(0, 1)==1):
+      out = textgen.generate(1, prefix=messaggio,temperature=0.1,return_as_list=True)
+      if(out!=messaggio): print_out(out,up,cont)
+  elif(messaggio.count("palese") > 0):
+    print("****** palese detected ******")
+    if(random.randint(0, 1)==1):
+      out = textgen.generate(1, prefix=messaggio,temperature=0.1,return_as_list=True)
+      if(out!=messaggio): print_out(out,up,cont)
   elif (rand > 9):
-    print("vado di numero random")
-    out = textgen.generate(1, temperature=1.0,return_as_list=True)        #decide il bot
-    print_out(out,up,cont)
+    print("****** vado di numero random ******")
+    if(len(messaggio)<20):
+      out = textgen.generate(1, prefix=messaggio, temperature=0.5,return_as_list=True)        #decide il bot
+      print_out(out,up,cont)
+    else:
+      out = textgen.generate(1, temperature=1.0,return_as_list=True)        #decide il bot
+      print_out(out,up,cont)
+  elif(messaggio.count("@AiUnivaqBot")):
+      print("****** SONO STATO CHIAMOATO??? ******")
+      temp = messaggio
+      temp.replace('@AiUnivaqBot','')
+      if(temp==''):
+        out = textgen.generate(1, temperature=1.0,return_as_list=True)        #decide il bot
+        print_out(out,up,cont)
+      else:
+        out = textgen.generate(1, prefix=temp, temperature=1.0,return_as_list=True)        #decide il bot
+        print_out(out,up,cont)
 
 
 
