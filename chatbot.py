@@ -86,8 +86,12 @@ def AINoText(update, context):    #funzione che risponde a tutti i messaggi
           out = textgen.generate(1, temperature=1.0,return_as_list=True)        #decide il bot
           print_out(out,up,cont)
         else:                                # se il messaggio dopo il tag non è vuoto                
-          out = textgen.generate(1, prefix=temp, temperature=0.2,return_as_list=True)    #decide il bot prendendo il messaggio dopo il tag
-          print_out(out,up,cont)
+          if(temp=="pseudocodice"):
+            print_out("take my {} bro",up,cont)
+          else:
+
+            out = textgen.generate(1, prefix=temp, temperature=0.2,return_as_list=True)    #decide il bot prendendo il messaggio dopo il tag
+            print_out(out,up,cont)
     elif (rand > 15):               # se nessuna delle condizioni precedenti è vera decido se parlare autonomaneamente o no
       print("****** vado di numero random ******")
       if(len(messaggio)<7):           # se il messaggio è più corto di 7 caratteri allora lo prendo per generare il testo
