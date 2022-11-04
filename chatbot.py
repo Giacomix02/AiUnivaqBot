@@ -82,8 +82,11 @@ def AINoText(update, context):
         temp = temp.replace("@aiunivaqbot","")
         print(temp)
         if(temp==""):
-          out = textgen.generate(1, temperature=1.0,return_as_list=True)        #decide il bot
-          print_out(out,up,cont)
+          if(temp=="proietti pezzo di merda"):
+            print_out("Gli sgozzo la famiglia",up,cont)
+          else:
+            out = textgen.generate(1, temperature=1.0,return_as_list=True)        #decide il bot
+            print_out(out,up,cont)
         else:
           out = textgen.generate(1, prefix=temp, temperature=1.0,return_as_list=True)        #decide il bot
           print_out(out,up,cont)
