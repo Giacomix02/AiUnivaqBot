@@ -13,6 +13,7 @@ import time
 global dateNow 
 dateNow = datetime.utcnow()
 dateNow = time.mktime(dateNow.timetuple())  # set dell'ora che ha il pc
+allenamento = 0
 
 # insert textgenrnn code into the directory
 
@@ -20,6 +21,17 @@ logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s
                     level=logging.INFO)   
 
 logger = logging.getLogger(__name__) #molto probabilmente avvia il bot con il codice a riga 135
+
+def AttivaAllenamentoAi(update, context):
+  global allenamento
+  allenamento=1
+  print("************* ATTIVAZIONE ALL. AI ************* "+str(allenamento))
+
+def DisattivaAllenamentoAi(update,context):
+  global allenamento
+  allenamento=0
+  print("************* DISATTIVAZIONE ALL. AI ************* "+str(allenamento))
+  
 
 def error(update, context):   #funzione che risponde agli errori
   """Log Errors caused by Updates."""
@@ -32,7 +44,7 @@ def print_out(out,update,context):    #funzione che stampa il messaggio su teleg
 
 def AINoText(update, context):    #funzione che risponde a tutti i messaggi
 
-  
+  global allenamento
   dateMs = update.message.date
   dateMs = time.mktime(dateMs.timetuple())  # prendo l'ora del messaggio
 
@@ -58,8 +70,13 @@ def AINoText(update, context):    #funzione che risponde a tutti i messaggi
     textgen = textgenrnn( weights_path='UnivaqBot_weights.hdf5',      # carico il modello dell'AI
                           vocab_path='UnivaqBot_vocab.json',          # possono essere sostituiti se l'ai viene allenata con altri dati
                           config_path='UnivaqBot_config.json')
+    
+    allenamentoRandom = random.randint(0, 10)
+    print("Random per allenamento: " + str(allenamentoRandom)+" Modalità:"+str(allenamento))
 
-
+    if(allenamentoRandom == 5 or allenamento==1):     # se il numero random è 5 oppure è attiva la modalità allenamento allora l'AI si allena sulla parola 
+      print("************* TEMPO DELL'ALLENAMENTO PER SPARARE STUPIDAGGINI MIGLIORI *************") # ==> 1/10 di possibilità che accade se è numero random
+      textgen.train_on_texts([messaggio], num_epochs=1, batch_size=20, max_gen_length=50,)  # l'AI impara dal messaggio se è maggiore di 20 caratteri
 
 
     if(messaggio.count("banal") > 0):           # se il messaggio contiene la parola banal
@@ -116,6 +133,8 @@ def main():
   #chiamata delle diverse funzioni
 
   dp.add_handler(CommandHandler("start", start))
+  dp.add_handler(CommandHandler("attiva", AttivaAllenamentoAi))
+  dp.add_handler(CommandHandler("disattiva", DisattivaAllenamentoAi))
   dp.add_handler(MessageHandler(None,AINoText))
 
 
