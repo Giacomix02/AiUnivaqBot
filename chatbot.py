@@ -123,8 +123,6 @@ def AINoText(update, context):    #funzione che risponde a tutti i messaggi
       elif (rand == 20):               # se nessuna delle condizioni precedenti è vera decido se parlare autonomaneamente o no
         print("****** vado di numero random ******")
         if(len(messaggio)<7):           # se il messaggio è più corto di 7 caratteri allora lo prendo per generare il testo
-          temp=messaggio
-          messaggio=messaggio.lsrip()
           try:
             print("****** TRY ******")
             update.message.reply_text(text_model.make_sentence_with_start(messaggio,strict=False))
