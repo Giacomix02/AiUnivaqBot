@@ -88,46 +88,53 @@ def AINoText(update, context):    #funzione che risponde a tutti i messaggi
 
       f = open('mydata.json')
       model_json = json.load(f)
-      text_model= markovify.Text.from_json(model_json)
+      text_model= markovify.Text.from_json(model_json)    # carico il modello markov
       
       
       if(messaggio.count("banal") > 0):           # se il messaggio contiene la parola banal
         print("****** banale detected ******")
         if(random.randint(0, 1)==1):                  # decido se rispondere o no
-          out = textgen.generate(1, prefix=messaggio,temperature=0.1,return_as_list=True) # genera il testo tramite AI
+          out = textgen.generate(1, prefix=messaggio,temperature=0.7,return_as_list=True) # genera il testo tramite AI
           if(out!=messaggio): print_out(out,up,cont)  # se il messaggio non è uguale a quello ricevuto allora lo stampa
       elif(messaggio.count("trivial") > 0):         # se il messaggio contiene la parola trivial
         print("****** triviale detected ******")
         if(random.randint(0, 1)==1):          # decido se rispondere o no 
-          out = textgen.generate(1, prefix=messaggio,temperature=0.1,return_as_list=True) # genera il testo tramite AI
-          if(out!=messaggio): print_out(out,up,cont)  # se il messaggio non è uguale a quello ricevuto allora lo stampa
+           update.message.reply_text(text_model.make_sentence_with_start("triviale",strict=False))
       elif(messaggio.count("palese") > 0):          # se il messaggio contiene la parola palese
         print("****** palese detected ******")
         if(random.randint(0, 1)==1):      # decido se rispondere o no
-          out = textgen.generate(1, prefix=messaggio,temperature=0.1,return_as_list=True) # genera il testo tramite AI
-          if(out!=messaggio): print_out(out,up,cont)    # se il messaggio non è uguale a quello ricevuto allora lo stampa
+          update.message.reply_text(text_model.make_sentence_with_start("palese",strict=False))
       elif(messaggio.count("@aiunivaqbot")>0):            # il bot viene taggato
           print("****** SONO STATO CHIAMATO??? ******")
           temp = messaggio
           temp = temp.replace("@aiunivaqbot","")        # rimuovo il tag
+          temp=temp.lstrip()
           print(temp)
           if(temp==""):                            # se il messaggio dopo il tag è vuoto
             update.message.reply_text(text_model.make_short_sentence(1000))        #decide il bot
-          else:                                # se il messaggio dopo il tag non è vuoto                
-            out = textgen.generate(1, prefix=temp, temperature=0.3,return_as_list=True)    #decide il bot prendendo il messaggio dopo il tag
-            print_out(out,up,cont)
-      elif (rand > 17):               # se nessuna delle condizioni precedenti è vera decido se parlare autonomaneamente o no
+          else:                                # se il messaggio dopo il tag non è vuoto   
+            try:
+              print("****** TRY ******")
+              update.message.reply_text(text_model.make_sentence_with_start(temp,strict=False))
+            except:
+              print("****** EXCEPT ******")             
+              out = textgen.generate(1, prefix=temp, temperature=0.7,return_as_list=True,)    #decide il bot prendendo il messaggio dopo il tag
+              print_out(out,up,cont)
+      elif (rand == 20):               # se nessuna delle condizioni precedenti è vera decido se parlare autonomaneamente o no
         print("****** vado di numero random ******")
         if(len(messaggio)<7):           # se il messaggio è più corto di 7 caratteri allora lo prendo per generare il testo
-          out = textgen.generate(1, prefix=messaggio, temperature=0.3,return_as_list=True)       # genera il testo tramite AI
-          print_out(out,up,cont)
+          temp=messaggio
+          messaggio=messaggio.lsrip()
+          try:
+            print("****** TRY ******")
+            update.message.reply_text(text_model.make_sentence_with_start(messaggio,strict=False))
+          except:
+            print("****** EXCEPT ******")
+            out = textgen.generate(1, prefix=messaggio, temperature=0.7,return_as_list=True, max_gen_length=300)       # genera il testo tramite AI
+            print_out(out,up,cont)
         else:         # genero il testo senza nessun vincolo
           update.message.reply_text(text_model.make_short_sentence(1000))        #decide il bot
   
-
-
-
-
 
 
 
