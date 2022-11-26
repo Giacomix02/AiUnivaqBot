@@ -6,7 +6,11 @@ from datetime import datetime
 import logging
 
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
-from textgenrnn import textgenrnn 
+from textgenrnn import textgenrnn
+
+import markovify
+import json
+
 import random
 import time
 
@@ -45,6 +49,13 @@ def print_out(out,update,context):    #funzione che stampa il messaggio su teleg
     update.message.reply_text(out[0]) #stampa il messaggio su telegram, out è un array sempre composto da un elemento
 
 
+
+
+
+
+
+
+
 def AINoText(update, context):    #funzione che risponde a tutti i messaggi
 
   global mute
@@ -74,14 +85,10 @@ def AINoText(update, context):    #funzione che risponde a tutti i messaggi
       textgen = textgenrnn( weights_path='UnivaqBot_weights.hdf5',      # carico il modello dell'AI
                             vocab_path='UnivaqBot_vocab.json',          # possono essere sostituiti se l'ai viene allenata con altri dati
                             config_path='UnivaqBot_config.json')
-      
-      #allenamentoRandom = random.randint(0, 10)
-      #print("Random per allenamento: " + str(allenamentoRandom)+" Modalità:"+str(allenamento))
 
-      #if(len(messaggio)>20):
-      #  if(allenamentoRandom == 5 or allenamento==1):     # se il numero random è 5 oppure è attiva la modalità allenamento allora l'AI si allena sulla parola 
-      #    print("************* TEMPO DELL'ALLENAMENTO PER SPARARE STUPIDAGGINI MIGLIORI *************") # ==> 1/10 di possibilità che accade se è numero random
-      #    textgen.train_on_texts([messaggio], num_epochs=2, batch_size=20, max_gen_length=50)  # l'AI impara dal messaggio se è maggiore di 20 caratteri
+      f = open('mydata.json')
+      model_json = json.load(f)
+      text_model= markovify.Text.from_json(model_json)
       
       
       if(messaggio.count("banal") > 0):           # se il messaggio contiene la parola banal
@@ -105,26 +112,33 @@ def AINoText(update, context):    #funzione che risponde a tutti i messaggi
           temp = temp.replace("@aiunivaqbot","")        # rimuovo il tag
           print(temp)
           if(temp==""):                            # se il messaggio dopo il tag è vuoto
-            out = textgen.generate(1, temperature=0.5,return_as_list=True)        #decide il bot
-            print_out(out,up,cont)
+            update.message.reply_text(text_model.make_short_sentence(1000))        #decide il bot
           else:                                # se il messaggio dopo il tag non è vuoto                
             out = textgen.generate(1, prefix=temp, temperature=0.3,return_as_list=True)    #decide il bot prendendo il messaggio dopo il tag
             print_out(out,up,cont)
-      elif (rand > 15):               # se nessuna delle condizioni precedenti è vera decido se parlare autonomaneamente o no
+      elif (rand > 17):               # se nessuna delle condizioni precedenti è vera decido se parlare autonomaneamente o no
         print("****** vado di numero random ******")
         if(len(messaggio)<7):           # se il messaggio è più corto di 7 caratteri allora lo prendo per generare il testo
           out = textgen.generate(1, prefix=messaggio, temperature=0.3,return_as_list=True)       # genera il testo tramite AI
           print_out(out,up,cont)
         else:         # genero il testo senza nessun vincolo
-          out = textgen.generate(1, temperature=0.5,return_as_list=True)        #decide il bot
-          print_out(out,up,cont)
+          update.message.reply_text(text_model.make_short_sentence(1000))        #decide il bot
   
-  
+
+
+
+
+
+
+
+
+
 
 def start(update, context):     #funzione che risponde al comando /start
   update.message.reply_text("Ciao, esisto")
 
 def main():
+
   print("************* TEMPO DI AVVIO *************")
   print(dateNow)
 
